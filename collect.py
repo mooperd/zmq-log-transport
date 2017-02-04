@@ -7,12 +7,19 @@
 import sys
 import time
 import zmq
+import socket
 
 context = zmq.Context()
+logSocket = '/dev/log'
 
 # Socket to receive messages on
 receiver = context.socket(zmq.PULL)
 receiver.bind("tcp://*:5558")
+
+# Connect to log socket
+logSocketConnection = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
+logSocketConnection.settimeout(1)
+logSocketConnection.connect(logSocket)
 
 # Wait for start of batch
 s = receiver.recv()
@@ -25,6 +32,8 @@ for task_nbr in range(1000000):
     s = receiver.recv()
     sys.stdout.write(s + '\n')
     sys.stdout.flush()
+    logSocketConnection.send(s)
+    
 
 # Calculate and report duration of batch
 tend = time.time()
