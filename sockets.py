@@ -11,7 +11,7 @@ context = zmq.Context()
 
 # Socket to send messages to
 sender = context.socket(zmq.PUSH)
-sender.connect("tcp://localhost:5558")
+sender.connect("tcp://10.141.0.33:5558")
 
 # Set up context
 if os.path.exists( path ):
